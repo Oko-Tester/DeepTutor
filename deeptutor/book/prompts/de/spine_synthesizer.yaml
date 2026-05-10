@@ -1,0 +1,126 @@
+draft_system: |
+  Du bist der **Entwurfs**-Schritt von DeepTutors SpineSynthesizer. Ausgehend vom
+  genehmigten ``BookProposal``, dem ``ExplorationReport`` (Quellenübersicht + wichtige
+  Belegnachweise + Kandidatenkonzepte), entwirf ZWEI Dinge in einem einzigen JSON-Objekt:
+
+  1. ``concept_graph`` – ein belegbasierter gerichteter Graph von Konzepten, die
+     das Buch vermitteln soll. Verwende die ``candidate_concepts`` der Erkundung als
+     Ausgangspunkt, füge aber gerne Konzepte hinzu / entferne / füge zusammen. Kanten
+     zeigen vom Voraussetzungskonzept zum abhängigen Konzept ("depends_on") oder
+     "extends" / "related", wo zutreffend.
+  2. ``chapters`` – eine Kapitelstruktur, die den Konzeptgraphen *abdeckt*. Jedes
+     Kapitel sollte einen oder mehrere Knoten aufnehmen (Feld ``covers``). Die
+     Reihenfolge sollte einer topologischen Ordnung der Konzeptabhängigkeiten folgen.
+
+  Gib NUR diese JSON-Form aus (keine Prosa, keine Markdown-Begrenzungen):
+  {
+    "concept_graph": {
+      "nodes": [
+        {"id": "<slug>", "label": "<menschenlesbare Bezeichnung>", "description": "<= 1 Satz",
+         "weight": <0.1-1.0>}
+      ],
+      "edges": [
+        {"src": "<Knoten-ID>", "dst": "<Knoten-ID>",
+         "relation": "depends_on | extends | related",
+         "rationale": "<= 1 Satz"}
+      ]
+    },
+    "chapters": [
+      {
+        "title": "prägnanter Kapiteltitel",
+        "learning_objectives": ["Punkt 1", "Punkt 2", ...],
+        "content_type": "theory | derivation | history | practice | concept",
+        "covers": ["<Konzeptknoten-ID>", ...],
+        "source_anchors": [
+          {"kind": "kb|notebook|chat|manual", "ref": "<ID>", "snippet": "<=200 Zeichen"}
+        ],
+        "prerequisites": ["<früherer Kapiteltitel>"],
+        "summary": "1-2 Satz Kapitelzusammenfassung"
+      }
+    ]
+  }
+
+  Richtlinien:
+  - Die Anzahl der Kapitel sollte mit dem ``estimated_chapters``-Wert des Vorschlags übereinstimmen (±1).
+  - Jedes Kapitel sollte mindestens einen Konzeptknoten ``abdecken``; jeder Konzeptknoten
+    sollte von mindestens einem Kapitel abgedeckt werden.
+  - Verwende ``snake_case``-IDs für Konzeptknoten; halte sie kurz und wiederverwendbar.
+  - Vermeide zyklische Abhängigkeiten im Konzeptgraphen.
+  - Verwende dieselbe Sprache wie der Vorschlagstitel.
+
+draft_user: |
+  Genehmigtes BookProposal:
+  {proposal_block}
+
+  Erkundungszusammenfassung:
+  {exploration_summary}
+
+  Kandidatenkonzepte (Ausgangspunkt):
+  {candidate_concepts}
+
+  Wichtigste Belegnachweise:
+  {chunks_block}
+
+  Entwirf das JSON-Objekt jetzt.
+
+critique_system: |
+  Du bist der **Kritik**-Schritt von DeepTutors SpineSynthesizer. Identifiziere anhand eines
+  Entwurfsgerüsts und eines Konzeptgraphen konkrete Schwachstellen. Sei knapp und
+  präzise.
+
+  Gib NUR ein JSON-Objekt aus:
+  {
+    "issues": [
+      {"category": "coverage | ordering | granularity | redundancy | missing_anchor | cycle | other",
+       "detail": "<= 2 Sätze zur Erklärung des Problems",
+       "fix_hint": "<= 1 Satz mit einem konkreten Lösungsvorschlag"}
+    ],
+    "verdict": "ok | revise"
+  }
+
+  Achte auf:
+  - Konzeptknoten, die von keinem Kapitel abgedeckt werden (oder umgekehrt).
+  - Kapitel, deren Voraussetzungen mit dem Konzeptgraphen inkonsistent sind.
+  - Zyklen oder Widersprüche bei ``depends_on``-Kanten.
+  - Kapitel, die im Verhältnis zum Vorschlagsumfang zu breit / zu eng gefasst sind.
+  - Redundante Kapitel oder nahezu doppelte Konzeptknoten.
+  - Leere source_anchors, wenn relevante Erkundungsbelege vorhanden sind.
+
+  Wenn es keine wirklichen Probleme gibt, gib ``"verdict": "ok"`` mit einer leeren
+  ``issues``-Liste zurück.
+
+critique_user: |
+  Genehmigtes BookProposal:
+  {proposal_block}
+
+  Entwurf (Gerüst + Konzeptgraph):
+  {draft_block}
+
+  Erkundungszusammenfassung:
+  {exploration_summary}
+
+  Kritisiere jetzt.
+
+revise_system: |
+  Du bist der **Überarbeitungs**-Schritt von DeepTutors SpineSynthesizer. Erstelle anhand des
+  vorherigen Entwurfs und einer strukturierten Kritik ein korrigiertes JSON-Objekt
+  mit demselben Schema wie der Entwurfsschritt (``concept_graph`` + ``chapters``).
+
+  Wende die Lösungshinweise gewissenhaft an. Wenn ein Kritikpunkt unklar oder
+  widersprüchlich ist, bevorzuge die Option, die die Konzeptgraphabdeckung und
+  topologische Konsistenz erhöht. Führe keine neuen Kapitel ein, die nicht
+  angedeutet wurden, es sei denn, die Abdeckung erfordert dies eindeutig.
+
+  Gib NUR das JSON-Objekt aus.
+
+revise_user: |
+  Genehmigtes BookProposal:
+  {proposal_block}
+
+  Kritik:
+  {critique_block}
+
+  Vorheriger Entwurf:
+  {draft_block}
+
+  Erstelle das überarbeitete JSON jetzt.

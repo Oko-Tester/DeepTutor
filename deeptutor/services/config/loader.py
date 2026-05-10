@@ -179,12 +179,13 @@ def parse_language(language: Any) -> str:
     Supported language representations:
     - English: "en", "english", "English"
     - Chinese: "zh", "chinese", "Chinese"
+    - German: "de", "german", "deutsch"
 
     Args:
-        language: Language configuration value (can be "zh"/"en"/"Chinese"/"English" etc.)
+        language: Language configuration value (can be "zh"/"en"/"de"/"Chinese"/"English"/"Deutsch" etc.)
 
     Returns:
-        Standardized language code: 'zh' or 'en', defaults to 'zh'
+        Standardized language code: 'zh', 'en', 'de', etc., defaults to 'zh'
     """
     if not language:
         return "zh"
@@ -195,6 +196,11 @@ def parse_language(language: Any) -> str:
             return "en"
         if lang_lower in ["zh", "chinese", "cn"]:
             return "zh"
+        if lang_lower in ["de", "german", "deutsch"]:
+            return "de"
+        # Generic passthrough for other ISO codes (e.g. "fr", "es", "ja")
+        if len(lang_lower) in (2, 5) and lang_lower.replace("-", "").isalpha():
+            return lang_lower
 
     return "zh"  # Default Chinese
 

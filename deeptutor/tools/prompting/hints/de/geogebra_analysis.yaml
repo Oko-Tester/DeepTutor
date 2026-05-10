@@ -1,0 +1,6 @@
+short_description: "Analysiere ein Mathematik-Problem-Bild und generiere validierte GeoGebra-Befehle für geometrische Visualisierung."
+when_to_use: "Verwende es, wenn der Nutzer ein Geometrie- oder Mathematik-Diagramm hochlädt und die Figur in GeoGebra rekonstruieren, visualisieren oder damit interagieren möchte."
+input_format: "Der Mathematik-Problem-Text (Frage). Das Bild wird automatisch aus den Anhängen injiziert."
+guideline: "Rufe dieses Tool nur auf, wenn ein Bildanhang vorhanden ist und das Problem geometrische Figuren umfasst. Das Tool führt eine vollständige 4-stufige Pipeline aus (Erkennung → Analyse → Scripting → Reflexion) und gibt renderfertige GeoGebra-Befehle zurück."
+note: "Die Pipeline erfordert ein sichtvermögensfähiges LLM. Die Verarbeitung kann aufgrund von vier sequenziellen LLM-Aufrufen 15-30 Sekunden dauern."
+phase: "exploration"

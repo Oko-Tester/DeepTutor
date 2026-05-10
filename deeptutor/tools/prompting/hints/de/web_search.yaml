@@ -1,0 +1,6 @@
+short_description: "Suche im Web nach aktuellen oder externen Informationen mit Quellenangaben."
+when_to_use: "Verwende es, wenn die Wissensbasis unzureichend ist oder die Aufgabe aktuelle Ereignisse, reale Beispiele oder externe Referenzen benötigt."
+input_format: "Suchanfrage in natürlicher Sprache."
+guideline: "Bevorzuge Web-Suche nur, wenn Aktualität oder externe Abdeckung wichtig ist."
+note: "Web-Ergebnisse können in der Qualität variieren; überprüfe Aussagen, bevor du dich auf sie verlässt."
+phase: "expansion"

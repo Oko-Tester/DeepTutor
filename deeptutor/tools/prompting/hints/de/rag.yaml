@@ -1,0 +1,6 @@
+short_description: "Suche in der Wissensbasis nach relevanten Passagen und fundierten Antworten."
+when_to_use: "Verwende es, wenn die Antwort wahrscheinlich von der hochgeladenen Wissensbasis abgedeckt wird, wie Definitionen, Formeln, Konzepte oder Lehrbucherklärungen."
+input_format: "{\"query\": \"nicht-leere natürlichsprachliche Abfrage\"}. Übergib keine leere Abfrage oder kb_name."
+guideline: "Bevorzuge RAG vor externer Suche, wenn die Aufgabe kursbezogen oder wissensbasisspezifisch ist."
+note: "Die Abfrage darf nicht leer sein; wenn die erste Abfrage schwach ist, überarbeite sie aus einem anderen Blickwinkel statt sofort aufzugeben."
+phase: "exploration"

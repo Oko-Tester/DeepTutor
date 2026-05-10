@@ -1,0 +1,6 @@
+short_description: "Suche arXiv-Paper nach akademischem Hintergrund und aktuellen Methoden."
+when_to_use: "Verwende es, wenn die Aufgabe Forschungsliteratur, State-of-the-Art-Methoden oder wissenschaftliche Referenzen benötigt."
+input_format: "Eine prägnante Schlüsselwort-Abfrage, meist auf Englisch."
+guideline: "Verwende Paper-Suche für forschungsorientierte Fragen, nicht für Standard-Lehrbuch-Wissen."
+note: "Paper-Suche ist am stärksten für akademische Themen und aktuelle Forschungstrends."
+phase: "expansion"

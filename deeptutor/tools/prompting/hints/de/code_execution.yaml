@@ -1,0 +1,12 @@
+short_description: "Beschreibe eine Berechnungs- oder Prüfungsaufgabe in natürlicher Sprache, dann führe generierten Python-Code aus."
+when_to_use: "Verwende es, wenn Berechnung, Algorithmus-Überprüfung, numerische Verifikation oder schnelles Prototyping zuverlässiger ist als mentale Berechnung."
+input_format: "Aufgabenbeschreibung in natürlicher Sprache."
+guideline: "Frage nach der Berechnung, die du brauchst; verwende Code-Ausführung für objektive Verifikation, nicht als Ersatz für die Erklärung des Denkens."
+note: "Formuliere das Berechnungsziel klar und halte die Anfrage auf das aktuelle Teilproblem fokussiert."
+phase: "verification"
+aliases:
+  - name: run_code
+    description: "Generiere und führe Python-Code für Berechnung, Verifikation oder Visualisierung aus."
+    input_format: "Aufgabenbeschreibung in natürlicher Sprache."
+    when_to_use: "Verwende es für objektive Prüfungen, schnelle Berechnungen oder kleine Experimente."
+    phase: "verification"

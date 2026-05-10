@@ -1,0 +1,119 @@
+# DecomposeAgent Prompt-Konfiguration (Deutsch)
+
+system:
+  role: |
+    Du bist ein Experte für Forschungsplanung, verantwortlich für die Zerlegung komplexer Themen in logisch klare, nicht überlappende Unterthemensysteme.
+
+mode_contracts:
+  study_notes_decompose: |
+    Du MUSST in **lernfreundliche Lerneinheiten** zerlegen, NICHT in Berichtskapitel.
+    - Unterthemen sollten sein: Kernkonzepte, Schlüsselmechanismen, durchgearbeitete Beispiele, häufige Fehler, Zusammenfassungsblöcke.
+    - Erstelle NIEMALS Unterthemen wie "Hintergrund", "Methodik", "Analyse", "Diskussion" — das sind Berichtsabschnitte.
+    - Jeder Untothementitel sollte kurz und gedächtnisorientiert sein (z. B. "Wie X funktioniert", "Schlüsselformel", "Achtung vor").
+    - Die Zerlegung muss dafür sorgen, dass spätere Ausgaben wie Wiederholungsnotizen wirken, nicht wie ein Aufsatz.
+  report_decompose: |
+    Du MUSST in **analytische Berichtsabschnitte** mit klarem Umfang und logischem Ablauf zerlegen.
+    - Bevorzuge: Kontext/Hintergrund, Hauptthemen, Methoden/Probleme, Synthese/Implikationen.
+    - Unterthemen sollten wie Berichtskapitel klingen. Erstelle NIEMALS Unterthemen im Karteikarten- oder Phasenstil.
+  comparison_decompose: |
+    Du MUSST nach **Vergleichsdimensionen** zerlegen, NICHT nach Option.
+    - Jedes Unterthema = eine Bewertungsdimension, die für ALLE Alternativen gilt (z. B. "Leistung", "Kosten", "Benutzerfreundlichkeit").
+    - Erstelle NIEMALS Unterthemen wie "Über Option A", "Über Option B" — das untergräbt den Vergleich.
+    - Schaffe Raum für Kompromisse, Stärken, Schwächen und szenariobezogene Urteile.
+    - Beispiel guter Unterthemen: "Dimension: Skalierbarkeit — Vergleich von A, B, C", "Dimension: Kosteneffizienz — Vergleich von A, B, C".
+  learning_path_decompose: |
+    Du MUSST in **voraussetzungsbewusste sequenzielle Lernphasen** zerlegen.
+    - Unterthemen müssen den Fortschritt widerspiegeln: was zuerst gelernt wird → als nächstes → danach.
+    - Erstelle NIEMALS flache thematische Abschnitte. Die Reihenfolge MUSS eine Rolle spielen — frühere Phasen sind Voraussetzungen für spätere.
+    - Jedes Unterthema sollte eine Phase mit Zielen, Übungen und einem Kontrollpunkt implizieren.
+    - Beispiel guter Unterthemen: "Phase 1: Mathematische Grundlagen (Voraussetzungen für alles)", "Phase 2: Kernalgorithmen (aufbauend auf Phase 1)".
+
+process:
+  generate_queries: |
+    Generiere {num_queries} Suchanfragen für das folgende Thema. Gib nur ein JSON-Objekt aus:
+
+    Thema: {topic}
+
+    Anforderungen:
+    1. Jede Anfrage 1-3 Schlüsselwörter, prägnant und repräsentativ
+    2. Verschiedene Dimensionen des Themas abdecken, um Vielfalt zu gewährleisten
+    3. Duplikate zwischen Anfragen vermeiden
+
+    JSON-Ausgabe:
+    {{
+        "queries": ["Anfrage 1", "Anfrage 2", ...]
+    }}
+
+  decompose: |
+    Zerlege das Thema anhand der folgenden Informationen in Unterthemen. Gib nur ein JSON-Objekt aus:
+
+    Hauptthema: {topic}
+
+    Hintergrundwissen (aus RAG-Abruf):
+    {rag_context}
+
+    {decompose_requirement}
+
+    **Modusspezifischer Schwerpunkt**:
+    {mode_instruction}
+
+    **Zerlegungsschritte:**
+
+    1. **Hintergrundwissen analysieren**: Kernkonzepte, Schlüsseltheorien und wichtige Inhalte identifizieren
+
+    2. **Forschungsdimensionen identifizieren**: Forschungsschwerpunkt für jede Dimension bestimmen, sicherstellen dass Dimensionen komplementär sind
+
+    3. **Unterthemen generieren**:
+       - Basierend auf tatsächlichen Inhalten im Hintergrundwissen
+       - Unterthemen sind logisch verwandt, aber nicht dupliziert
+       - Hauptaspekte des Themas abdecken
+
+    4. **Beschreibungen verfeinern**:
+       - title: Prägnant und klar, den Kern des Unterthemas ausdrückend
+       - overview: 2-3 Sätze, Inhalt, Bedeutung und Forschungswert erklärend
+
+    JSON-Ausgabe:
+    {{
+        "sub_topics": [
+            {{
+                "title": "Untothementitel",
+                "overview": "Detaillierte Übersicht, die Inhalt, Schwerpunkt und Forschungswert erklärt"
+            }}
+        ]
+    }}
+
+  decompose_without_rag: |
+    Zerlege das folgende Forschungsthema in klare, gut strukturierte Unterthemen. Gib nur ein JSON-Objekt aus:
+
+    Hauptthema: {topic}
+
+    {decompose_requirement}
+
+    **Modusspezifischer Schwerpunkt**:
+    {mode_instruction}
+
+    **Zerlegungsschritte (Ohne RAG-Kontext):**
+
+    1. **Schlüsselaspekte identifizieren**: Basierend auf deinem Wissen, die Schlüsselaspekte und Dimensionen dieses Themas identifizieren
+
+    2. **Unterthemen generieren**:
+       - Jedes Unterthema sollte einen eigenständigen Aspekt des Hauptthemas abdecken
+       - Unterthemen sollten logische Beziehungen haben, aber nicht überlappen oder sich duplizieren
+       - Sicherstellen, dass die Unterthemen zusammen einen umfassenden Forschungsrahmen bilden
+
+    3. **Beschreibungen verfeinern**:
+       - title: Prägnant und klar, den Kernfokus des Unterthemas ausdrückend
+       - overview: 2-3 Sätze, die erklären:
+         - Was dieses Unterthema abdeckt
+         - Warum es für das Verständnis des Hauptthemas wichtig ist
+         - Schlüsselkonzepte oder zu erkundende Bereiche
+
+    JSON-Ausgabe:
+    {{
+        "sub_topics": [
+            {{
+                "title": "Untothementitel (prägnant und klar)",
+                "overview": "Detaillierte Übersicht (2-3 Sätze, die Bedeutung, Umfang und Schlüsselbereiche erklären)"
+            }}
+        ]
+    }}

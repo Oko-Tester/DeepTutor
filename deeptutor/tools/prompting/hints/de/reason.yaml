@@ -1,0 +1,6 @@
+short_description: "Rufe ein dediziertes Reasoning-Modell für ein schwieriges Teilproblem auf."
+when_to_use: "Verwende es, wenn der aktuelle Kontext mehrdeutig ist, mehrere Schritte synthetisiert werden müssen oder ein schwieriges Teilproblem tiefere Analyse benötigt."
+input_format: "Eine fokussierte Reasoning-Frage plus optionaler unterstützender Kontext."
+guideline: "Reserviere tiefes Reasoning für Engpässe, bei denen einfachere Recherche oder Berechnung nicht ausreicht."
+note: "Gute Reasoning-Prompts sind spezifisch; füge nur den Kontext ein, der für das Teilproblem benötigt wird."
+phase: "synthesis"

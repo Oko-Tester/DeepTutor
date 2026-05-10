@@ -1,0 +1,1064 @@
+# ReportingAgent Prompt-Konfiguration - Tiefgreifende Forschungsberichtserstellung
+# Designziel: Reichhaltige, kohärente und umfassende akademische Tiefenforschungsberichte erstellen
+
+# Zitatanweisungs-Templates
+citation:
+  enabled_instruction: |
+    **Zitationsanforderungen (KRITISCH)**:
+       - Format: Verwende das Format `[N]`, wobei N die Referenznummer aus der folgenden Tabelle ist
+       - Verwende NUR Referenznummern aus der Zitations-Referenztabelle – erfinde KEINE Nummern!
+       - Platziere Zitate am Ende von Sätzen oder Aussagen, die Informationen aus dieser Quelle verwenden
+       - Füge KEINEN Abschnitt „Referenzen" hinzu – er wird automatisch generiert
+
+    **Zitations-Referenztabelle** (verwende genau diese Nummern):
+    {citation_table}
+
+    **Beispiele**:
+       - „Laut aktueller Forschung [5] erreicht die Methode..."
+       - „Dieser Ansatz wurde in mehreren Studien validiert [3][7]."
+
+  disabled_instruction: |
+    **Zitationsanforderungen**:
+       - Füge KEINE Inline-Zitate wie [1], [[1]] oder [N] in den Text ein
+       - Füge am Ende KEINEN Abschnitt „Referenzen" hinzu – Referenzen werden separat behandelt
+       - Konzentriere dich auf die inhaltliche Synthese ohne Zitationsmarkierungen
+
+system:
+  role: |
+    Du bist ein erstklassiger akademischer Schreib- und Inhaltsintegrationsexperte, der darin versiert ist, komplexe Forschungsergebnisse in gut strukturierte, aufschlussreiche Fachberichte umzuwandeln. Deine Berichte sollen folgende Qualitäten aufweisen:
+
+    **Zentrale Schreibphilosophie**:
+    1. **Tiefe vor Breite**: Wenige Kernpunkte tiefgehend analysieren ist besser als viele oberflächlich zu behandeln
+    2. **Argumentation statt Behauptung**: Jeder Punkt soll durch Belege, Begründungen oder Beispiele gestützt werden
+    3. **Strukturierte Darstellung**: Formeln, Tabellen, Flussdiagramme, Code und andere Elemente zur Verbesserung des Ausdrucks verwenden
+    4. **Akademische Strenge**: Quellen korrekt zitieren, Fakten von Schlussfolgerungen unterscheiden, Einschränkungen anerkennen
+
+    **Wichtige Formatanforderungen**:
+    - Alle Ausgaben müssen strikt dem JSON-Format folgen
+    - Nur gültige JSON-Objekte ausgeben, keinen zusätzlichen Text, Erklärungen oder Code-Block-Markierungen einfügen
+    - JSON muss direkt parsierbar sein, darf keine Kommentare oder Formatfehler enthalten
+    - Wenn die Ausgabe Markdown-Inhalte enthält, diese als JSON-String-Wert einfügen und Sonderzeichen korrekt escapen
+
+mode_contracts:
+  study_notes_outline: |
+    - Dieser Modus muss ein Lernnotizen-Artefakt produzieren, keinen formellen Bericht.
+    - Verwende eine notizenbasierte Gliederung: Kernideen, Mechanismen, Beispiele, Fallstricke und Zusammenfassung.
+    - Abschnittstitel sollen kurz, direkt und gedächtnisorientiert sein.
+    - Gliederung NICHT als Hintergrund-Methode-Analyse-Schlussfolgerung strukturieren.
+  study_notes_introduction: |
+    - Die Einleitung kurz und orientierungsorientiert halten.
+    - Angeben, was der Lernende nach dem Lesen der Notizen verstehen sollte.
+    - Berichtsartige Szenenaufbau oder lange Motivation vermeiden.
+  study_notes_section: |
+    - Wie ein hochwertiges Lernblatt schreiben.
+    - Aufzählungspunkte, kurze Erklärungsblöcke, ausgearbeitete Mini-Beispiele, Fallstricklisten und Schlüsselerkenntnis-Blöcke bevorzugen.
+    - Den Abschnitt NIEMALS wie einen langen formellen Aufsatz lesen lassen.
+    - Für jedes wichtige Konzept eine Definitionsbox einfügen: `> **Definition — <Begriff>**: <prägnante Definition>`
+    - Jeden Abschnitt mit einer „Teste dich selbst"-Mikrofrage beenden: `> 💡 **Teste dich selbst**: Kannst du <Konzept> erklären, ohne in die Notizen zu schauen?`
+    - Wo angemessen, einen Gedächtnisanker hinzufügen: `> 🧠 **Gedächtnisanker**: <Eselsbrücke, Analogie oder visueller Hinweis zur Unterstützung des Erinnerns>`
+  study_notes_conclusion: |
+    - Mit einer Zusammenfassungs-Checkliste oder einem Erkenntnisblock enden.
+    - Wichtige Erkenntnisse und optionale häufige Fehler einbeziehen.
+    - Eine **Selbsttest-Checkliste** hinzufügen: eine nummerierte Liste von Kernaussagen/Konzepten, die der Lernende auswendig erklären können sollte.
+    - Keine formelle Schlussfolgerung mit Einschränkungen oder zukünftiger Arbeit schreiben.
+  study_notes_single_pass: |
+    - Die vollständige Ausgabe muss wie für einen Lernenden aufbereitete Lernnotizen wirken.
+    - Sie soll kompakt, leicht scanbar, einprägsam und für die Wiederholung klar gegliedert sein.
+    - Definitionsboxen, „Teste dich selbst"-Mikrofragen und Gedächtnisanker durchgehend einbeziehen.
+    - Mit einer Selbsttest-Checkliste der Kernkonzepte zur Überprüfung des Erinnerns enden.
+    - Das fertige Artefakt soll sich für Verständnis, Gedächtnis und schnelle Wiederholung optimiert anfühlen.
+
+  report_outline: |
+    - Dieser Modus muss einen formellen Synthesebericht produzieren.
+    - Eine konventionelle analytische Struktur verwenden: Kontext, Hauptthemen, Analyse, Synthese, Schlussfolgerung.
+    - Nicht in ein Notizenblatt, eine Vergleichsmatrix oder einen stufenweisen Fahrplan umwandeln.
+  report_introduction: |
+    - Eine formelle Einleitung schreiben, die Motivation, Umfang und Berichtsstruktur abdeckt.
+    - Der Ton soll analytisch und berichtartig sein.
+  report_section: |
+    - Durchgehende analytische Prosa mit klaren Übergängen und synthetisierten Belegen schreiben.
+    - Abschnitte sollen sich wie Kapitel eines Berichts anfühlen, nicht wie Notizfragmente oder Stufenanleitungen.
+  report_conclusion: |
+    - Mit einer angemessenen syntheseartigen Schlussfolgerung enden.
+    - Erkenntnisse, Implikationen, Einschränkungen und die abschließende analytische Erkenntnis zusammenfassen.
+  report_single_pass: |
+    - Die endgültige Ausgabe muss wie ein ordentlicher Bericht mit konsistenter analytischer Prosa und Berichtsstruktur wirken.
+    - Das fertige Artefakt soll sich für Analyse, Synthese und evidenzbasierte Erklärung optimiert anfühlen.
+
+  comparison_outline: |
+    - Dieser Modus muss ein Vergleichslieferobjekt produzieren, keinen generischen Bericht.
+    - Die Gliederung nach Vergleichsdimensionen oder Bewertungskriterien organisieren.
+    - Explizit Raum für Trade-offs, Stärken, Schwächen und Szenarioeignung einplanen.
+    - Eine Vergleichsmatrix oder -tabelle sollte in der Struktur selbstverständlich erwartet werden.
+  comparison_introduction: |
+    - Klar definieren, was verglichen wird, warum es wichtig ist und welche Vergleichskriterien verwendet werden.
+  comparison_section: |
+    - Jeder Hauptabschnitt muss Alternativen nebeneinander vergleichen.
+    - Dimensionsbasierte Analyse, explizite Kontraste, Tabellen und szenariobasierte Urteile verwenden.
+    - Nicht in isolierte Themenzusammenfassungen abdriften.
+    - Für jede Vergleichsdimension jedem Objekt eine quantitative Punktzahl (1-5) zuweisen. Punkte in einer Mini-Tabelle präsentieren.
+    - Format: `| Kriterium | Option A | Option B | ... |` mit numerischen Punktzahlen.
+  comparison_conclusion: |
+    - Mit einem Urteil und einer Empfehlung nach Szenario, Einschränkung oder Priorität enden.
+    - Auswahlhinweise explizit machen.
+    - Eine **Bewertungszusammenfassungstabelle** einbeziehen, die alle dimensionsspezifischen Punkte in einer Tabelle zusammenfasst:
+      `| Dimension | Option A | Option B | ... | (mit numerischen 1-5-Punkten)`
+    - Unterhalb der Tabelle allgemeine gewichtete Eindrücke und szenariobasierte Empfehlungen angeben.
+  comparison_single_pass: |
+    - Die gesamte Ausgabe muss dimensionsorientiert, trade-off-lastig und empfehlungsorientiert sein.
+    - Sie soll unverkennbar wie ein Vergleichsdokument wirken.
+    - Quantitative 1-5-Punkte pro Dimension pro Option und eine Bewertungszusammenfassungstabelle in der Schlussfolgerung einbeziehen.
+    - Das fertige Artefakt soll dem Leser helfen, eine Entscheidung unter expliziten Szenarien oder Einschränkungen zu treffen.
+
+  learning_path_outline: |
+    - Dieser Modus muss einen stufenweisen Lernfahrplan produzieren.
+    - Die Gliederung nach Progression organisieren: Voraussetzungen, Stufe 1, Stufe 2, Stufe 3, Übung, Meilensteine, nächste Schritte.
+    - Keine generischen thematischen Berichtskapitel als primäre Struktur verwenden.
+  learning_path_introduction: |
+    - Das Lernerprofil, Voraussetzungsannahmen und die erwartete Progression definieren.
+    - Die Fahrplanabsicht von Anfang an deutlich machen.
+  learning_path_section: |
+    - Als Lernfahrplan schreiben, nicht als Bericht.
+    - Sequenz, Voraussetzungen, Übungen, Kontrollpunkte, Meilensteine und was als nächstes zu lernen ist, explizit machen.
+    - Jeder Abschnitt soll dem Lernenden helfen zu handeln, nicht nur zu verstehen.
+    - Jeden Abschnitt mit Metadaten beginnen: `> ⏱️ **Geschätzte Zeit**: X Stunden` und `> 📊 **Schwierigkeitsgrad**: Grundlagen / Fortgeschritten / Experte`
+    - Einen **Empfohlene Ressourcen**-Block einbeziehen: `> 📚 **Ressourcen**: [Bücher, Kurse, Tools oder Links]`
+  learning_path_conclusion: |
+    - Mit Meilenstein-Checks, Ratschlägen für nächste Schritte und wie man nach Abschluss des Pfads weitermacht enden.
+    - Ein Mermaid-Fahrplan-Diagramm einbeziehen, das die Stufenprogression zeigt:
+      ```mermaid
+      graph LR
+        A[Stufe 1: ...] --> B[Stufe 2: ...]
+        B --> C[Stufe 3: ...]
+      ```
+    - Unterhalb des Diagramms die geschätzte Gesamtzeit und eine abschließende Kompetenz-Checkliste zusammenfassen.
+  learning_path_single_pass: |
+    - Die endgültige Ausgabe muss wie ein stufenweiser Studienplan mit Progressionslogik, Kontrollpunkten, Übungen und Sequenz wirken.
+    - Jede Stufe muss geschätzte Zeit, Schwierigkeitsbezeichnung und empfohlene Ressourcen enthalten.
+    - Mit einem Mermaid-Fahrplan-Diagramm und einer Gesamtzeitschätzung enden.
+    - Das fertige Artefakt soll dem Lernenden helfen zu entscheiden, was zuerst, als nächstes zu tun ist und wie der Fortschritt beurteilt werden kann.
+
+process:
+  deduplicate: |
+    Analysiere die folgende Themenliste und identifiziere doppelte oder sehr ähnliche Themen.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Themenliste:
+    {topics}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    **Analyseschritte:**
+    1. Den Kerninhalt und die Forschungsperspektive jedes Themas verstehen
+    2. Semantisch doppelte oder sehr ähnliche Themen identifizieren (Hinweis: dasselbe Konzept aus verschiedenen Perspektiven ist KEINE Duplikation)
+    3. Die repräsentativsten und inhaltsreichsten Themen behalten
+
+    **Ausgabeformatanforderungen (strikt befolgen):**
+    - Nur JSON-Objekt ausgeben, keinen ```json Code-Block-Wrapper verwenden
+    - Keinen erklärenden Text hinzufügen
+    - Sicherstellen, dass das JSON-Format vollständig gültig und direkt parsierbar ist
+
+    Ausgabebeispiel (nur zur Formatreferenz, Inhalt nicht kopieren):
+    {{
+      "duplicates": [{{"indices": [0, 3], "reason": "Semantische Duplikation: beide behandeln grundlegende Prinzipien von XX"}}],
+      "keep_indices": [0, 1, 2, 4],
+      "summary": "4 komplementäre Themen beibehalten, die theoretische Grundlagen, technische Implementierung, Anwendungsszenarien und Grenzentwicklungen abdecken"
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  generate_outline: |
+    Erstelle eine strukturierte dreistufige Überschriftensystem-Gliederung für die folgende Forschung.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Forschungsthema: {topic}
+
+    Forschungsthemen (einschließlich Unterthema, Überblick und tool_summaries):
+    {topics_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    **Gliederungsdesignprinzipien**:
+
+    1. **Dreistufiges Überschriftensystem**:
+       - Ebene 1 (#): Berichthaupttitel
+       - Ebene 2 (##): Hauptabschnitte (Einleitung, Kernabschnitte 1-N, Schlussfolgerung)
+       - Ebene 3 (###): Unterabschnitte innerhalb jedes Abschnitts
+       - Ebene 4 (####): Weitere Unterteilungen (optional, für komplexe Abschnitte)
+
+    2. **Logisches Strukturdesign**:
+       - Logische Beziehungen zwischen Themen identifizieren: Hierarchie, Abhängigkeit, Parallelität, Progression, Vergleich
+       - Nach kognitivem Fluss ordnen: Konzept → Prinzipien → Methoden → Anwendungen → Bewertung → Ausblick
+       - Klare Übergangslogik zwischen Abschnitten sicherstellen
+
+    3. **Abschnittsdesign-Richtlinien**:
+       - Jeder Hauptabschnitt soll eine klare Forschungsfrage oder ein klares Ziel haben
+       - Unterabschnitte sollen Kerndimensionen des Themas abdecken
+       - Anweisungen sollen wichtige einzubeziehende Elemente und den Darstellungsansatz spezifizieren
+
+    **Ausgabeformatanforderungen (strikt befolgen):**
+    - Nur JSON-Objekt ausgeben, keinen ```json Code-Block-Wrapper verwenden
+    - Keinen erklärenden Text hinzufügen
+
+    Ausgabebeispiel (nur zur Formatreferenz, Inhalt nicht kopieren):
+    {{
+      "title": "# Berichthaupttitel: Forschungsthema präzise ausdrücken",
+      "introduction": "## Einleitung",
+      "introduction_instruction": "Forschungshintergrund, Problemmotivation, Forschungsziele und Berichtsstruktur vorstellen",
+      "sections": [
+        {{
+          "title": "## 1. Titel des ersten Hauptabschnitts",
+          "instruction": "Dieser Abschnitt konzentriert sich auf... sollte Prinzipleitung und Schlüsselformeln einbeziehen",
+          "block_id": "block_1",
+          "subsections": [
+            {{
+              "title": "### 1.1 Unterabschnittstitel",
+              "instruction": "Im Detail erläutern... Vergleichstabellen empfohlen"
+            }},
+            {{
+              "title": "### 1.2 Unterabschnittstitel",
+              "instruction": "Analysieren... Flussdiagramme empfohlen"
+            }}
+          ]
+        }}
+      ],
+      "conclusion": "## Schlussfolgerung und zukünftige Richtungen",
+      "conclusion_instruction": "Kernerkenntnisse, Forschungsbeiträge, Einschränkungen und zukünftige Richtungen zusammenfassen"
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  write_introduction: |
+    Schreibe den Einleitungsabschnitt des Forschungsberichts.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Forschungsthema: {topic}
+    Einleitungsleitfaden: {introduction_instruction}
+    Überblick über Forschungsthemen: {topics_summary}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Einleitungsschreib-Framework** (400-600 Wörter):
+
+    1. **Eröffnungsaussage** (Absatz 1):
+       - Mit makroökonomischem Hintergrund oder wichtigen Trends beginnen
+       - Kernherausforderungen oder -chancen im Forschungsbereich einführen
+       - Die Notwendigkeit und Dringlichkeit der Forschung hervorheben
+
+    2. **Problemfokus** (Absatz 2):
+       - Die spezifischen Probleme, die diese Forschung adressiert, klar benennen
+       - Einschränkungen bestehender Methoden oder des Verständnisses erläutern
+       - Kernforschungsziele einführen
+
+    3. **Forschungsumfang** (Absatz 3):
+       - Die wichtigsten von der Forschung abgedeckten Dimensionen skizzieren
+       - Die logischen Beziehungen zwischen verschiedenen Teilen erläutern
+       - Kernerkenntnisse oder Beiträge vorschau (optional)
+
+    4. **Strukturleitfaden** (Absatz 4):
+       - Die Organisation der Berichtsabschnitte kurz vorstellen
+       - Lesern helfen, Leseerwartungen aufzubauen
+
+    **Schreibanforderungen**:
+    - Akademische, aber zugängliche Sprache verwenden
+    - Jeder Absatz soll einen klaren Themensatz haben
+    - Natürliche Übergänge zwischen Absätzen
+    - Keine Abschnittsüberschriften verwenden, direkt Fließtext schreiben
+
+    **Ausgabeformatanforderungen (strikt befolgen):**
+    - Nur JSON-Objekt ausgeben, keinen ```json Code-Block-Wrapper verwenden
+    - Sonderzeichen in JSON-Strings (wie Anführungszeichen, Zeilenumbrüche) müssen korrekt escaped werden
+
+    Ausgabebeispiel:
+    {{
+        "introduction": "Vollständiger Einleitungsinhalt (Markdown-Format, ohne Überschrift, 400-600 Wörter)"
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  write_section_body: |
+    Tiefgreifenden Abschnittsinhalt basierend auf Forschungsdaten schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Forschungsthema: {topic}
+    Abschnittstitel: {section_title}
+    Schreibleitfaden: {section_instruction}
+    Datenquelle: {block_data}
+
+    **Tiefes Schreib-Framework**:
+
+    ## Schritt 1: Tiefgehende Materialanalyse
+
+    1. **Informationsklassifizierung**:
+       - **Kernschicht**: Schlüsseldefinitionen, Kernformeln, Hauptschlussfolgerungen → Vollständig darstellen
+       - **Stützschicht**: Ableitungsprozesse, experimentelle Daten, Fallanalysen → Selektiv ausführen
+       - **Hintergrundschicht**: Historische Entwicklung, verwandte Arbeiten → Kurz erwähnen
+
+    2. **Bewertung der Informationsglaubwürdigkeit**:
+       - Priorität: begutachtete Fachaufsätze > maßgebliche Lehrbücher > technische Dokumentation > Web-Ressourcen
+       - Konfliktbehandlung: Verschiedene Standpunkte notieren oder die aktuellste/maßgeblichste Quelle wählen
+
+    ## Schritt 2: Strukturierte Organisation
+
+    **Dreistufiges Überschriftensystem** (muss befolgt werden):
+    - `##` als Hauptabschnittsüberschrift verwenden
+    - `###` zur Organisation von Unterthemen verwenden (2-4 ist ideal)
+    - Komplexe Unterthemen können `####` für weitere Unterteilung verwenden
+
+    **Logische Architekturmuster** (das am besten geeignete auswählen):
+    - **Deduktiv**: Prinzipien → Folgerungen → Anwendungen → Validierung
+    - **Induktiv**: Phänomene → Analyse → Muster → Theorie
+    - **Vergleichend**: Methode A vs Methode B → Vor-/Nachteile-Analyse → Anwendbare Szenarien
+    - **Problemorientiert**: Problem → Bestehende Lösungen → Einschränkungen → Verbesserungsideen
+
+    ## Schritt 3: Verwendung multimodaler Elemente
+
+    **Muss basierend auf Inhaltsmerkmalen folgende Elemente selektiv verwenden**:
+
+    1. **Mathematische Formeln** (LaTeX-Format):
+       - Inline-Formel: `$E = mc^2$`
+       - Block-Formel:
+         ```
+         $$
+         \mathcal{L} = \sum_{i=1}^{n} \ell(y_i, f(x_i)) + \lambda \Omega(f)
+         $$
+         ```
+       - Anwendbar: Definitionen, Theoreme, Ableitungen, Optimierungsziele usw.
+
+    2. **Tabellen** (Markdown-Format):
+       - Anwendbar: mehrdimensionale Vergleiche, Parameterkonfigurationen, experimentelle Ergebnisse, Klassifizierungszusammenfassungen
+       - Formatbeispiel:
+         ```
+         | Methode | Genauigkeit | Effizienz | Anwendungsfall |
+         |---------|-------------|-----------|----------------|
+         | A       | 95%         | Schnell   | Echtzeitsysteme |
+         | B       | 98%         | Langsam   | Offline-Analyse |
+         ```
+
+    3. **Flussdiagramme** (Mermaid-Format):
+       - Anwendbar: Algorithmusabläufe, Systemarchitekturen, Entscheidungslogik, Datenflüsse
+       - Formatbeispiel:
+         ```mermaid
+         graph TD
+             A[Eingabe] --> B{{Verarbeitung}}
+             B --> C[Ausgabe]
+         ```
+
+    4. **Code-Blöcke**:
+       - Anwendbar: Algorithmusimplementierungen, Konfigurationsbeispiele, API-Aufrufe
+       - Sprachtyp muss angegeben werden (python/javascript/sql usw.)
+
+    5. **Listen und Hierarchie**:
+       - Geordnete Listen: Schritte, Rangfolgen, Prioritäten
+       - Ungeordnete Listen: Merkmale, Elemente, Optionen
+       - Verschachtelte Listen: hierarchische Beziehungen, Klassifizierungssysteme
+
+    ## Schritt 4: Akademische Schreibstandards
+    {citation_instruction}
+
+    1. **Tiefes Paraphrasieren**:
+       - Direktes Kopieren vermeiden, mit akademischer Sprache umformulieren
+       - Beispieltransformation:
+         - Original: „Methode X funktioniert gut"
+         - Überarbeitet: „Experimentelle Ergebnisse zeigen, dass Methode X in Metrik Y eine signifikante Verbesserung erzielt, mit einer Z%igen Steigerung gegenüber dem Basisansatz"
+
+    2. **Argumentationsvollständigkeit**:
+       - Jeder Kernpunkt sollte haben: Behauptung → Belege → Analyse → Zusammenfassung
+       - Geeignete Übergangssätze zur Verbindung von Absätzen verwenden
+
+    3. **Umgang mit Fachterminologie**:
+       - Bei Ersterwähnung Definition oder Erklärung bereitstellen
+       - Format „Begriff (englisches Original)" kann verwendet werden
+
+    **Ausgabeformatanforderungen (strikt befolgen):**
+    - Nur JSON-Objekt ausgeben, keinen ```json Code-Block-Wrapper verwenden
+    - Zeilenumbrüche in JSON-Strings sollen \n-Escape verwenden
+    - Sicherstellen, dass das JSON-Format vollständig gültig ist
+
+    Ausgabebeispiel:
+    {{
+        "section_content": "## Abschnittstitel\n\nEröffnungsabsatz...\n\n### 1.1 Unterabschnittstitel\n\nInhalt...\n\n### 1.2 Unterabschnittstitel\n\nInhalt...{citation_output_hint}"
+    }}
+
+    **Wortanzahlanforderung**: Jeder Abschnitt soll mindestens 800 Wörter umfassen, mit umfassender und gründlicher Diskussion
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  write_conclusion: |
+    Schreibe den Schlussfolgerungsabschnitt des Forschungsberichts.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Forschungsthema: {topic}
+    Schlussfolgerungsleitfaden: {conclusion_instruction}
+    Wichtige Erkenntnisse: {topics_findings}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Schlussfolgerungsschreib-Framework** (500-700 Wörter):
+
+    1. **Forschungsrückblick und Kernerkenntnisse** (Absätze 1-2):
+       - Forschungsfragen und -methoden kurz überblicken
+       - Kernerkenntnisse aus jedem Kapitel systematisch zusammenfassen
+       - Zu Gesamtschlussfolgerungen synthetisieren
+
+    2. **Forschungsbeiträge und Wert** (Absatz 3):
+       - **Theoretische Beiträge**: Fortschritte im Domänenverständnis
+       - **Methodologische Beiträge**: Neue Methoden, Frameworks oder Tools
+       - **Praktischer Wert**: Leitlinien für reale Anwendungen
+
+    3. **Einschränkungen und Reflexionen** (Absatz 4):
+       - Ehrlich auf Forschungseinschränkungen hinweisen
+       - Einschränkungen von Daten, Methoden oder Umfang erläutern
+       - Grenzen der Anwendbarkeit von Schlussfolgerungen angeben
+
+    4. **Zukunftsausblick** (Absatz 5):
+       - Offene zu lösende Probleme identifizieren
+       - Wertvolle Forschungsrichtungen vorschlagen
+       - Ausblick auf Entwicklungstrends im Bereich
+
+    **Schreibanforderungen**:
+    - Schlussfolgerung soll hochverdichtet sein, Textdetails nicht wiederholen
+    - Kritisches Denken demonstrieren, Einschränkungen nicht vermeiden
+    - Ausblick soll spezifisch und machbar sein, nicht allgemein
+    - Keine Abschnittsüberschriften verwenden, direkt Fließtext schreiben
+
+    **Ausgabeformatanforderungen (strikt befolgen):**
+    - Nur JSON-Objekt ausgeben, keinen ```json Code-Block-Wrapper verwenden
+    - Sonderzeichen in JSON-Strings müssen korrekt escaped werden
+
+    Ausgabebeispiel:
+    {{
+        "conclusion": "Vollständiger Schlussfolgerungsinhalt (Markdown-Format, ohne Überschrift, 500-700 Wörter)"
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  write_full_report: |
+    Den vollständigen Forschungsbericht in einem Durchgang schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Forschungsthema: {topic}
+    Gliederungs-JSON:
+    {outline_json}
+
+    Block-Daten:
+    {blocks_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    Zitationsanweisung:
+    {citation_instruction}
+
+    **Anforderungen**:
+    1. Der Gliederungsstruktur eng folgen:
+       - Den Haupttitel beibehalten
+       - Einleitung, Hauptabschnitte und Schlussfolgerung einbeziehen
+       - Abschnittshierarchie (`#`, `##`, `###`) wo angemessen beibehalten
+    2. Die Block-Zusammenfassungen zu einem kohärenten Bericht synthetisieren
+    3. Den Bericht prägnant aber substanziell halten; keinen Referenzabschnitt hinzufügen
+    4. Wenn Zitationsnummern in Spuren vorhanden sind, diese nur im Format `[N]` verwenden
+    5. Den vollständigen Markdown-Bericht als einen String zurückgeben
+
+    Ausgabebeispiel:
+    {{
+      "report": "# Titel\n\n## Einleitung\n\n...\n\n## Abschnitt\n\n...\n\n## Schlussfolgerung\n\n..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  # Neu: Unterabschnitts-Schreib-Prompt (für Inhalt mit Ebene-3-Überschriften)
+  write_subsection: |
+    Unterabschnittsinhalt basierend auf dem Kontext des übergeordneten Abschnitts schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Forschungsthema: {topic}
+    Übergeordneter Abschnittstitel: {parent_section_title}
+    Unterabschnittstitel: {subsection_title}
+    Schreibleitfaden: {subsection_instruction}
+    Verwandte Daten: {subsection_data}
+
+    **Schreibanforderungen**:
+
+    1. **Inhaltspositionierung**:
+       - Sich auf das spezifische Thema des Unterabschnitts konzentrieren
+       - Logische Kohärenz mit dem übergeordneten Abschnitt aufrechterhalten
+       - Inhaltsüberschneidungen mit anderen Unterabschnitten vermeiden
+
+    2. **Tiefeanforderungen**:
+       - Spezifische technische Details oder Fallanalysen bereitstellen
+       - Formeln, Tabellen, Diagramme und andere Elemente angemessen verwenden
+       - Argumente sollen gut begründet und evidenzbasiert sein
+
+    3. **Formatstandards**:
+       - `###` als Unterabschnittsüberschrift verwenden
+       - `####` für weitere Unterteilung kann verwendet werden (optional)
+       - Klare Absätze mit deutlicher Logik
+
+    **Ausgabeformatanforderungen (strikt befolgen):**
+    - Nur JSON-Objekt ausgeben
+    - Zeilenumbrüche in JSON-Strings sollen \n-Escape verwenden
+
+    Ausgabebeispiel:
+    {{
+        "subsection_content": "### Unterabschnittstitel\n\nInhalt...\n\n#### Unterthema (optional)\n\nInhalt..."
+    }}
+
+    **Wortanzahlanforderung**: Jeder Unterabschnitt soll 300-500 Wörter umfassen
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  # ============================================================
+  # LERNNOTIZEN — moduspezifische Prozess-Templates
+  # ============================================================
+
+  generate_outline_study_notes: |
+    Erstelle eine Lernnotizen-Gliederung für das folgende Thema.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben, keinen weiteren Text, Erklärungen oder Code-Block-Markierungen.**
+
+    Thema: {topic}
+
+    Forschungsthemen (einschließlich Unterthema, Überblick und tool_summaries):
+    {topics_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    **LERNNOTIZEN-Gliederungsregeln** (strikt befolgen):
+
+    1. **KEINE** berichtsartige Struktur verwenden (Einleitung → Analyse → Schlussfolgerung).
+    2. Nach **Lerneinheiten** organisieren: Inhalte rund um Konzepte, Mechanismen, Beispiele und Fallstricke gruppieren.
+    3. Abschnittstitel müssen **kurz, direkt und gedächtnisorientiert** sein — z. B. „Kernidee: X", „Wie es funktioniert", „Achtung", „Kurzreferenz".
+    4. Einen **Kurzreferenz / Spickzettel**-Abschnitt am Ende einbeziehen.
+    5. Abschnitte sollen sich wie ein gut organisiertes Notizbuch anfühlen, nicht wie Kapitel eines Aufsatzes.
+
+    Ausgabe-JSON (exakt dieser Form entsprechen):
+    {{
+      "title": "# Lernnotizen: Thematitel",
+      "introduction": "## Was diese Notizen abdecken",
+      "introduction_instruction": "In 2-3 Sätzen angeben, was der Lernende nach dem Lesen dieser Notizen verstehen wird. Keine formelle Einleitung.",
+      "sections": [
+        {{
+          "title": "## Notiz 1. Abschnittstitel",
+          "instruction": "Die Kernidee, Definition, den Mechanismus und ein konkretes Mini-Beispiel für dieses Konzept abdecken.",
+          "block_id": "block_1",
+          "subsections": [
+            {{ "title": "### Was es bedeutet", "instruction": "Definition und Intuition" }},
+            {{ "title": "### Wie es funktioniert", "instruction": "Kernmechanismus mit einem Mini-Beispiel" }},
+            {{ "title": "### Häufige Fehler", "instruction": "Fallstricke und Missverständnisse" }}
+          ]
+        }}
+      ],
+      "conclusion": "## Kurzreferenz",
+      "conclusion_instruction": "Eine leicht scannbare Zusammenfassung bereitstellen: Schlüsselbegriffe mit einzeiligen Definitionen, die 3-5 wichtigsten Erkenntnisse und eine Liste häufiger zu vermeidender Fallstricke."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben, keinen weiteren Inhalt einbeziehen.**
+
+  write_introduction_study_notes: |
+    Schreibe eine kurze Orientierung für Lernnotizen.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Orientierungsleitfaden: {introduction_instruction}
+    Themenüberblick: {topics_summary}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Regeln**:
+    - **Nur 2-4 Sätze** schreiben. Keine formelle Einleitung.
+    - Angeben, was die Notizen abdecken und was der Leser nach dem Lesen tun/erklären können sollte.
+    - Optional Voraussetzungen erwähnen.
+    - Ton: freundlich, direkt, wie ein Tutor, der mit einem Studenten spricht.
+
+    Ausgabe:
+    {{
+        "introduction": "Kurzer Orientierungstext (2-4 Sätze, ohne Überschrift)"
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_section_body_study_notes: |
+    Einen Lernnotizen-Abschnitt schreiben. Die Ausgabe muss aussehen und sich anfühlen wie hochwertige Lernnotizen — KEIN Aufsatz oder Berichtskapitel.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Abschnittstitel: {section_title}
+    Schreibleitfaden: {section_instruction}
+    Datenquelle: {block_data}
+
+    **Lernnotizen-Schreibregeln** (VERBINDLICH):
+
+    1. **Struktur**: Kurze Absätze, Aufzählungslisten, nummerierte Schritte und Callout-Blöcke verwenden. NIEMALS langen ununterbrochenen Fließtext schreiben.
+    2. **Definitionsboxen**: Für jeden Schlüsselbegriff verwenden:
+       ```
+       > **Definition — Begriff**: Einzeilige Erklärung.
+       ```
+    3. **Mini-Beispiele**: Mindestens ein konkretes ausgearbeitetes Beispiel pro Abschnitt einbeziehen. Code-Blöcke, Mathematik oder schrittweise Erläuterungen nach Bedarf verwenden.
+    4. **Fallstrick-Warnungen**: Häufige Fehler markieren mit:
+       ```
+       > ⚠️ **Häufiger Fehler**: Beschreibung des Fehlers und wie man ihn vermeidet.
+       ```
+    5. **Schlüsselerkenntnis-Block**: Jeden Abschnitt beenden mit:
+       ```
+       > 🔑 **Schlüsselerkenntnis**: Das eine, das man aus diesem Abschnitt mitnehmen sollte.
+       ```
+    6. **Tabellen**: Vergleichstabellen für kontrastierende Konzepte, Parameterzusammenfassungen oder Methodenvergleiche verwenden.
+    7. **Formeln**: LaTeX beibehalten. Inline: `$...$`. Block: `$$...$$`.
+    8. **Teste dich selbst**: Mit einer Mikrofrage enden, die das Erinnern testet:
+       ```
+       > 💡 **Teste dich selbst**: Kannst du <Konzept> erklären, ohne in die Notizen zu schauen?
+       ```
+    9. **Gedächtnisanker**: Wo hilfreich, eine Eselsbrücke, Analogie oder einen visuellen Hinweis bereitstellen:
+       ```
+       > 🧠 **Gedächtnisanker**: <Eselsbrücke oder Analogie zur Unterstützung des Erinnerns>
+       ```
+    10. **NIEMALS** wie ein Bericht schreiben: kein „In diesem Abschnitt untersuchen wir…", keine langen analytischen Abhandlungen, keine formellen Übergänge.
+
+    {citation_instruction}
+
+    Ausgabe:
+    {{
+        "section_content": "## Abschnittstitel\n\n> **Definition — X**: ...\n\n- Punkt 1\n- Punkt 2\n\n**Beispiel**:\n...\n\n> ⚠️ **Häufiger Fehler**: ...\n\n> 🧠 **Gedächtnisanker**: ...\n\n> 🔑 **Schlüsselerkenntnis**: ...\n\n> 💡 **Teste dich selbst**: ...{citation_output_hint}"
+    }}
+
+    **Wortanzahl**: 400-700 Wörter. Klarheit vor Länge priorisieren.
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_conclusion_study_notes: |
+    Einen Kurzreferenz / Spickzettel-Abschluss für Lernnotizen schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Schlussfolgerungsleitfaden: {conclusion_instruction}
+    Wichtige Erkenntnisse: {topics_findings}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Regeln** (VERBINDLICH):
+    - **KEINE** formelle Schlussfolgerung mit „Einschränkungen" oder „zukünftiger Arbeit" schreiben.
+    - Einen leicht scannbaren Referenzblock ausgeben, der enthält:
+      1. **Schlüsselbegriff-Tabelle**: Begriff | Definition (eine Zeile pro Schlüsselkonzept)
+      2. **Top-Erkenntnisse**: Nummerierte Liste der 3-5 wichtigsten Punkte
+      3. **Häufige Fallstricke**: Aufzählungsliste der zu vermeidenden Fehler
+      4. **Selbsttest-Checkliste**: Nummerierte Liste von Kernaussagen/Konzepten, die der Lernende auswendig erklären können sollte. Format: `✅ 1. Kannst du ... erklären?`
+    - Kompakt und leicht scanbar halten — dies ist ein Spickzettel, kein Zusammenfassungsaufsatz.
+
+    Ausgabe:
+    {{
+        "conclusion": "| Begriff | Definition |\n|---|---|\n| ... | ... |\n\n**Top-Erkenntnisse**\n1. ...\n2. ...\n\n**Zu vermeidende Fallstricke**\n- ...\n\n**Selbsttest-Checkliste**\n✅ 1. Kannst du ... erklären?\n✅ 2. ..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_full_report_study_notes: |
+    Vollständige Lernnotizen in einem Durchgang schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Gliederungs-JSON:
+    {outline_json}
+
+    Block-Daten:
+    {blocks_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    Zitationsanweisung:
+    {citation_instruction}
+
+    **KRITISCH**: Die Ausgabe MUSS wie gut organisierte Lernnotizen wirken, KEIN Bericht.
+
+    **Verbindliche Formatierungselemente**:
+    - Definitionsboxen: `> **Definition — Begriff**: ...`
+    - Mini-Beispiele mit Code/Mathematik/Schritten
+    - Fallstrick-Warnungen: `> ⚠️ **Häufiger Fehler**: ...`
+    - Schlüsselerkenntnis-Blöcke: `> 🔑 **Schlüsselerkenntnis**: ...`
+    - Teste-dich-selbst-Mikrofragen: `> 💡 **Teste dich selbst**: Kannst du ... erklären?`
+    - Gedächtnisanker: `> 🧠 **Gedächtnisanker**: <Eselsbrücke oder Analogie>`
+    - Vergleichstabellen wo relevant
+    - Ein Kurzreferenz-Abschnitt am Ende mit Begriffstabelle + Top-Erkenntnisse + Fallstrikliste + Selbsttest-Checkliste
+    - Kurze Absätze und Aufzählungslisten — KEIN langer Fließtext
+
+    Ausgabe:
+    {{
+      "report": "# Lernnotizen: Titel\n\n## Was diese Notizen abdecken\n...\n\n## Notiz 1. ...\n\n> **Definition — X**: ...\n\n...\n\n## Kurzreferenz\n\n| Begriff | Definition |\n|---|---|\n..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  # ============================================================
+  # VERGLEICH — moduspezifische Prozess-Templates
+  # ============================================================
+
+  generate_outline_comparison: |
+    Erstelle eine Vergleichsdokument-Gliederung für das folgende Thema.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+
+    Forschungsthemen (einschließlich Unterthema, Überblick und tool_summaries):
+    {topics_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    **VERGLEICH-Gliederungsregeln** (strikt befolgen):
+
+    1. **Struktur MUSS dimensionsorientiert sein**, NICHT objektorientiert. Jeder Hauptabschnitt vergleicht ALLE Alternativen entlang EINER Dimension.
+    2. Mit einem Vergleichsaufbau-Abschnitt beginnen (was verglichen wird, warum, Kriterien).
+    3. Mittlere Abschnitte = einer pro Vergleichsdimension oder Bewertungskriterium.
+    4. Jeder Dimensionsabschnitt MUSS Platz für eine Vergleichstabelle haben.
+    5. Mit einem Trade-off-Zusammenfassung + Empfehlung nach Szenario-Abschnitt enden.
+    6. **NIEMALS** nach Option A und dann Option B separat beschreiben organisieren.
+
+    Ausgabe-JSON:
+    {{
+      "title": "# Vergleich: Thematitel",
+      "introduction": "## Vergleichsaufbau",
+      "introduction_instruction": "Definieren, was verglichen wird, warum es wichtig ist, die Bewertungskriterien und das angestrebte Entscheidungsszenario. Fokussiert halten.",
+      "sections": [
+        {{
+          "title": "## Dimension 1. Dimensionsname",
+          "instruction": "Alle Alternativen entlang dieser Dimension vergleichen. MUSS eine Seite-an-Seite-Tabelle, Stärken/Schwächen und ein Szenarioeignungsurteil einbeziehen.",
+          "block_id": "block_1",
+          "subsections": [
+            {{ "title": "### Seite-an-Seite-Kontrast", "instruction": "Vergleichstabelle + Hauptunterschiede" }},
+            {{ "title": "### Trade-offs", "instruction": "Stärken, Schwächen, Einschränkungen" }},
+            {{ "title": "### Beste Eignung", "instruction": "Welche Option für welches Szenario unter dieser Dimension am besten geeignet ist" }}
+          ]
+        }}
+      ],
+      "conclusion": "## Urteil & Empfehlung",
+      "conclusion_instruction": "Eine Entscheidungsmatrix-Tabelle (Szenario x Option → Empfehlung) und klare szenariospezifische Empfehlungen bereitstellen."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_introduction_comparison: |
+    Den Vergleichsaufbau-Abschnitt schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Aufbauleitfaden: {introduction_instruction}
+    Themenüberblick: {topics_summary}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Regeln**:
+    - Klar angeben: (a) welche Alternativen verglichen werden, (b) warum der Vergleich wichtig ist, (c) die Bewertungskriterien/Dimensionen, (d) das beabsichtigte Entscheidungsszenario.
+    - Eine Aufzählungsliste mit Kriterien verwenden.
+    - Unter 300 Wörtern halten. Kein allgemeines Szenenaufbau.
+
+    Ausgabe:
+    {{
+        "introduction": "Vergleichsaufbautext (ohne Überschrift)"
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_section_body_comparison: |
+    Einen Vergleichsdimensionsabschnitt schreiben. Jeder Abschnitt MUSS Alternativen nebeneinander vergleichen — NIEMALS eine Option isoliert beschreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Abschnittstitel: {section_title}
+    Schreibleitfaden: {section_instruction}
+    Datenquelle: {block_data}
+
+    **Vergleichsschreibregeln** (VERBINDLICH):
+
+    1. **Vergleichstabelle**: Jeder Abschnitt MUSS mit einer Markdown-Tabelle beginnen oder prominent eine enthalten, die Optionen vergleicht:
+       ```
+       | Kriterium | Option A | Option B | Option C |
+       |-----------|----------|----------|----------|
+       | ...       | ...      | ...      | ...      |
+       ```
+    2. **Dimensionsanalyse**: Nach der Tabelle die wichtigsten Trade-offs, Nuancen und Grenzfälle für diese Dimension diskutieren.
+    3. **Stärken & Schwächen**: Explizite `**Stärken**:` und `**Schwächen**:`-Unterblöcke für jede Option verwenden.
+    4. **Quantitative Punktzahl**: Für diese Dimension jeder Option eine Punktzahl von 1-5 zuweisen (1=schlecht, 5=ausgezeichnet).
+    5. **Szenarioeignungsurteil**: Mit einer klaren Aussage enden: „Für Szenario X ist Option Y vorzuziehen, weil…"
+    6. **NIEMALS** isolierte Optionsprofile schreiben. Jeder Absatz muss vergleichen.
+    7. Fettgedruckte Bezeichnungen, Tabellen und strukturierte Listen verwenden. Langen Fließtext minimieren.
+
+    {citation_instruction}
+
+    Ausgabe:
+    {{
+        "section_content": "## Dimensionstitel\n\n| Kriterium | A | B | Punktzahl A | Punktzahl B |\n|---|---|---|---|---|\n| ... | ... | ... | 4 | 3 |\n\n**Analyse**: ...\n\n**Stärken & Schwächen**:\n- Option A: ...\n- Option B: ...\n\n**Beste Eignung**: Für Szenario X bevorzuge ...{citation_output_hint}"
+    }}
+
+    **Wortanzahl**: 500-800 Wörter pro Dimensionsabschnitt.
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_conclusion_comparison: |
+    Den Urteil & Empfehlung-Abschnitt schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Urteilsleitfaden: {conclusion_instruction}
+    Wichtige Erkenntnisse: {topics_findings}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Regeln** (VERBINDLICH):
+    - **Bewertungszusammenfassungstabelle**: MUSS eine aggregierte Bewertungstabelle mit 1-5-Punkten pro Dimension pro Option einbeziehen:
+      ```
+      | Dimension   | Option A | Option B | Option C |
+      |-------------|----------|----------|----------|
+      | Dim 1       | 4        | 3        | 5        |
+      | Dim 2       | 3        | 5        | 2        |
+      | **Durchschnitt** | **3,5** | **4,0** | **3,5** |
+      ```
+    - **Entscheidungsmatrix-Tabelle**: Eine Tabelle einbeziehen, die Szenarien/Prioritäten empfohlenen Optionen zuordnet:
+      ```
+      | Wenn Sie … priorisieren | Empfohlen | Warum |
+      |--------------------------|-----------|-------|
+      | Leistung                 | Option A  | ...   |
+      | Kosten                   | Option B  | ...   |
+      ```
+    - **Szenariospezifische Empfehlungen**: Nach den Tabellen 2-3 Sätze pro Szenario zur Erklärung der Empfehlung schreiben.
+    - **NIEMALS** eine vage „es kommt darauf an"-Schlussfolgerung schreiben. Spezifisch und meinungsstark sein.
+    - Kein formeller Abschnitt „Einschränkungen und zukünftige Arbeit".
+
+    Ausgabe:
+    {{
+        "conclusion": "**Bewertungszusammenfassung**\n\n| Dimension | A | B |\n|---|---|---|\n| ... | 4 | 3 |\n| **Durchschnitt** | **3,5** | **4,0** |\n\n**Empfehlung nach Szenario**\n\n| Wenn Sie … priorisieren | Empfohlen | Warum |\n|---|---|---|\n| ... | ... | ... |\n\n**Szenario 1**: ...\n\n**Szenario 2**: ..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_full_report_comparison: |
+    Ein vollständiges Vergleichsdokument in einem Durchgang schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Gliederungs-JSON:
+    {outline_json}
+
+    Block-Daten:
+    {blocks_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    Zitationsanweisung:
+    {citation_instruction}
+
+    **KRITISCH**: Die Ausgabe MUSS wie ein dimensionsorientiertes Vergleichsdokument wirken, KEIN generischer Bericht.
+
+    **Verbindliche Elemente**:
+    - Vergleichsaufbau-Abschnitt, der Was/Warum/Kriterien definiert
+    - Jeder Hauptabschnitt = eine Vergleichsdimension mit einer Vergleichstabelle
+    - Stärken/Schwächen für jede Option pro Dimension
+    - Szenarioeignungsurteile in jedem Abschnitt
+    - Urteilsabschnitt mit Entscheidungsmatrix-Tabelle + szenariospezifische Empfehlungen
+    - NIEMALS Optionen isoliert beschreiben
+
+    Ausgabe:
+    {{
+      "report": "# Vergleich: Titel\n\n## Vergleichsaufbau\n...\n\n## Dimension 1. ...\n\n| ... | A | B |\n...\n\n## Urteil & Empfehlung\n\n| Wenn Sie … priorisieren | Empfohlen | Warum |\n..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  # ============================================================
+  # LERNPFAD — moduspezifische Prozess-Templates
+  # ============================================================
+
+  generate_outline_learning_path: |
+    Erstelle eine Lernpfad-Fahrplan-Gliederung für das folgende Thema.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+
+    Forschungsthemen (einschließlich Unterthema, Überblick und tool_summaries):
+    {topics_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    **LERNPFAD-Gliederungsregeln** (strikt befolgen):
+
+    1. **Struktur MUSS stufenorientiert und progressiv sein**. Der Leser soll eine klare Entwicklung vom Anfänger zum Kompetenten spüren.
+    2. Mit einem „Für wen dieser Pfad gedacht ist"-Abschnitt beginnen (Lernerprofil, Voraussetzungen, Endziel).
+    3. Mittlere Abschnitte = sequentielle Stufen (Stufe 1 → Stufe 2 → Stufe 3 → …). Nach Voraussetzungsabhängigkeit ordnen — was MUSS vor was gelernt werden.
+    4. Jede Stufe MUSS einbeziehen: Lernziele, Kerninhalt, Übungsvorschläge und einen Kontrollpunkt (wie man weiß, dass man für die nächste Stufe bereit ist).
+    5. Mit „Meilensteine & Was als nächstes" enden — Fortschrittsmarkierungen und Fortsetzungsratschläge.
+    6. **NIEMALS** als flacher thematischer Bericht organisieren. Die Progression muss offensichtlich sein.
+
+    Ausgabe-JSON:
+    {{
+      "title": "# Lernpfad: Thematitel",
+      "introduction": "## Für wen dieser Pfad gedacht ist",
+      "introduction_instruction": "Den Ziellernenden (Hintergrund, Level) definieren, Voraussetzungen, was er nach Abschluss des Pfads tun können wird, und geschätzten Aufwand.",
+      "sections": [
+        {{
+          "title": "## Stufe 1. Stufenname",
+          "instruction": "Die grundlegenden Konzepte für diese Stufe abdecken. Lernziele, Kerninhalt, Übungsplan und einen Kontrollpunkt einbeziehen.",
+          "block_id": "block_1",
+          "subsections": [
+            {{ "title": "### Lernziele", "instruction": "Was der Lernende nach dieser Stufe tun können sollte" }},
+            {{ "title": "### Kerninhalt", "instruction": "Die Schlüsselkonzepte und das Material für diese Stufe" }},
+            {{ "title": "### Übung & Aufgaben", "instruction": "Praxisaktivitäten, Übungen oder Projekte" }},
+            {{ "title": "### Kontrollpunkt", "instruction": "Wie man die Bereitschaft für die nächste Stufe überprüft" }}
+          ]
+        }}
+      ],
+      "conclusion": "## Meilensteine & Was als nächstes",
+      "conclusion_instruction": "Eine Meilenstein-Checkliste für alle Stufen, Selbstbewertungskriterien und Hinweise, wohin man nach Abschluss des Pfads gehen kann, bereitstellen."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_introduction_learning_path: |
+    Den „Für wen dieser Pfad gedacht ist"-Abschnitt eines Lernpfads schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Lernerleitfaden: {introduction_instruction}
+    Themenüberblick: {topics_summary}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Regeln**:
+    - Definieren: (a) Ziellernendenprofil, (b) Vorwissen, (c) was der Lernende nach Abschluss des Pfads tun können wird, (d) geschätzte Zeit/Aufwand.
+    - Ein strukturiertes Format mit fettgedruckten Bezeichnungen verwenden.
+    - Unter 300 Wörtern halten. Spezifisch und handlungsorientiert sein.
+
+    Ausgabe:
+    {{
+        "introduction": "**Ziellernender**: ...\n\n**Voraussetzungen**: ...\n\n**Nach Abschluss dieses Pfads**: ...\n\n**Geschätzter Aufwand**: ..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_section_body_learning_path: |
+    Einen Lernstufenabschnitt schreiben. Die Ausgabe muss sich wie eine strukturierte Lehrplansstufe lesen — KEIN Berichtskapitel.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Abschnittstitel: {section_title}
+    Schreibleitfaden: {section_instruction}
+    Datenquelle: {block_data}
+
+    **Lernpfad-Stufenregeln** (VERBINDLICH):
+
+    1. **Stufen-Metadaten**: Jede Stufe beginnen mit:
+       ```
+       > ⏱️ **Geschätzte Zeit**: X Stunden
+       > 📊 **Schwierigkeitsgrad**: Grundlagen / Fortgeschritten / Experte
+       ```
+    2. **Lernziele**: Eine Aufzählungsliste: „Nach dieser Stufe wirst du in der Lage sein: …"
+    3. **Warum jetzt**: Kurz die Voraussetzungskette erläutern — warum diese Stufe an diesem Punkt kommt.
+    4. **Kerninhalt**: Die Schlüsselkonzepte lehren. Definitionsboxen, Beispiele, Diagramme und Code nach Bedarf verwenden. Erklärungen klar und progressiv halten.
+    5. **Übungsplan**: Spezifische Übungen, Mini-Projekte oder zu lösende Probleme einbeziehen:
+       ```
+       > 📝 **Übung**: Beschreibung der Aufgabe, erwartetes Ergebnis und wie man die Antwort überprüft.
+       ```
+    6. **Empfohlene Ressourcen**: Bücher, Kurse, Tools oder Links vorschlagen:
+       ```
+       > 📚 **Ressourcen**: [Liste empfohlener Materialien]
+       ```
+    7. **Kontrollpunkt**: Mit einem Selbstbewertungsblock enden:
+       ```
+       > ✅ **Kontrollpunkt — Bereit für Stufe N+1?**
+       > - Kannst du X erklären?
+       > - Kannst du Y implementieren?
+       > - Kannst du erkennen, wann Z gilt?
+       ```
+    8. **NIEMALS** wie ein Berichtsabschnitt schreiben. Jeder Absatz soll dem Lernenden helfen zu HANDELN, nicht nur zu verstehen.
+
+    {citation_instruction}
+
+    Ausgabe:
+    {{
+        "section_content": "## Stufe N. Titel\n\n> ⏱️ **Geschätzte Zeit**: X Stunden\n> 📊 **Schwierigkeitsgrad**: Fortgeschritten\n\n**Lernziele**:\n- ...\n\n**Warum jetzt**: ...\n\n### Kerninhalt\n...\n\n> 📝 **Übung**: ...\n\n> 📚 **Ressourcen**: ...\n\n> ✅ **Kontrollpunkt — Bereit für Stufe N+1?**\n> - ...{citation_output_hint}"
+    }}
+
+    **Wortanzahl**: 500-800 Wörter pro Stufe.
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_conclusion_learning_path: |
+    Den „Meilensteine & Was als nächstes"-Abschnitt für einen Lernpfad schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Meilensteinleitfaden: {conclusion_instruction}
+    Wichtige Erkenntnisse: {topics_findings}
+    Gesamtanzahl Themen: {total_topics}
+
+    **Regeln** (VERBINDLICH):
+    - **Fahrplan-Diagramm**: Ein Mermaid-Flussdiagramm einbeziehen, das die Stufenprogression zeigt:
+      ```mermaid
+      graph LR
+        A["Stufe 1: ..."] --> B["Stufe 2: ..."]
+        B --> C["Stufe 3: ..."]
+      ```
+    - **Meilenstein-Checkliste**: Eine Tabelle für alle Stufen mit Zeitschätzungen:
+      ```
+      | Stufe | Meilenstein | Gesch. Zeit | Selbstcheck |
+      |-------|-------------|-------------|-------------|
+      | 1     | ...         | X Stunden   | Kannst du…? |
+      ```
+    - **Gesamtzeitschätzung**: Alle Stufenzeiten für den gesamten Pfad summieren.
+    - **Selbstbewertung**: Dem Lernenden helfen, seine allgemeine Bereitschaft zu beurteilen.
+    - **Was als nächstes**: Konkrete Ratschläge, wohin man nach Abschluss dieses Pfads gehen kann — fortgeschrittene Themen, Projekte, Gemeinschaften, Ressourcen.
+    - **NIEMALS** eine formelle Schlussfolgerung mit „Einschränkungen" schreiben. Dies ist zukunftsorientiert und handlungsorientiert.
+
+    Ausgabe:
+    {{
+        "conclusion": "**Lernfahrplan**\n\n```mermaid\ngraph LR\n  A[Stufe 1] --> B[Stufe 2]\n  B --> C[Stufe 3]\n```\n\n**Meilenstein-Checkliste**\n\n| Stufe | Meilenstein | Gesch. Zeit | Selbstcheck |\n|---|---|---|---|\n| ... | ... | X Stunden | ... |\n\n**Geschätzte Gesamtzeit**: X Stunden\n\n**Selbstbewertung**: ...\n\n**Was als nächstes**: ..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**
+
+  write_full_report_learning_path: |
+    Ein vollständiges Lernpfad-Dokument in einem Durchgang schreiben.
+
+    **Wichtig: Du musst nur ein gültiges JSON-Objekt ausgeben.**
+
+    Thema: {topic}
+    Gliederungs-JSON:
+    {outline_json}
+
+    Block-Daten:
+    {blocks_json}
+
+    Gesamtanzahl Themen: {total_topics}
+
+    Zitationsanweisung:
+    {citation_instruction}
+
+    **KRITISCH**: Die Ausgabe MUSS wie ein stufenweiser Lernlehrplan wirken, KEIN Bericht.
+
+    **Verbindliche Elemente**:
+    - „Für wen dieser Pfad gedacht ist"-Abschnitt mit Lernerprofil, Voraussetzungen, Endziel
+    - Sequentielle Stufen (Stufe 1 → 2 → 3…), jeweils mit:
+      - Stufen-Metadaten: `> ⏱️ **Geschätzte Zeit**: X Stunden` und `> 📊 **Schwierigkeitsgrad**: Grundlagen/Fortgeschritten/Experte`
+      - Ziele, Warum-jetzt, Kerninhalt, Übung, empfohlene Ressourcen, Kontrollpunkt
+    - Übungsblöcke: `> 📝 **Übung**: ...`
+    - Ressourcenblöcke: `> 📚 **Ressourcen**: ...`
+    - Kontrollpunktblöcke: `> ✅ **Kontrollpunkt**: ...`
+    - „Meilensteine & Was als nächstes"-Abschnitt mit Mermaid-Fahrplan-Diagramm + Meilenstein-Tabelle + Gesamtzeitschätzung + Fortsetzungsratschläge
+    - Klare Voraussetzungskette durchgehend sichtbar
+    - NIEMALS als flacher thematischer Bericht schreiben
+
+    Ausgabe:
+    {{
+      "report": "# Lernpfad: Titel\n\n## Für wen dieser Pfad gedacht ist\n...\n\n## Stufe 1. ...\n\n**Lernziele**:\n...\n\n> 📝 **Übung**: ...\n\n> ✅ **Kontrollpunkt**: ...\n\n## Meilensteine & Was als nächstes\n..."
+    }}
+
+    **Jetzt direkt das JSON-Objekt ausgeben.**

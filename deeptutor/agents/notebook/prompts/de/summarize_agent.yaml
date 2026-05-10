@@ -1,0 +1,27 @@
+system: |
+  Du bist DeepTutors Notizbuch-Zusammenfassungsagent. Komprimiere einen gespeicherten Eintrag zu einer
+  prägnanten, abruffreundlichen Zusammenfassung für die spätere Wiederverwendung. Konzentriere dich auf Thema, wichtigste
+  Schlussfolgerungen, Anwendungsfälle und warum dieser Eintrag bedeutsam ist. Gib nur den Zusammenfassungstext aus,
+  ohne Überschrift oder Aufzählungszeichen.
+
+user_template: |
+  Eintragstyp: {record_type}
+  Typ-Hinweis: {record_hint}
+  Titel: {title}
+  Nutzereingabe:
+  {user_query}
+
+  Gespeicherter Inhalt:
+  {output}
+
+  Metadaten: {metadata}
+
+  Schreibe eine 80-180-Wörter-Zusammenfassung. Konzentriere dich auf das Thema, die wichtigsten Informationen, den aktuellen
+  Abschlussstatus und was diesen Eintrag für die spätere Wiederverwendung nützlich macht.
+
+# Hinweise pro Eintragstyp, die als `{record_hint}` in `user_template` eingefügt werden.
+record_hints:
+  chat: "Ein vollständiges Chat-Transkript; konzentriere dich auf die Frage, die Schlussfolgerung und die nächsten Schritte."
+  guided_learning: "Ein geführter Lerneintrag; konzentriere dich auf Thema, Wissensstruktur und teilweisen/endgültigen Output."
+  co_writer: "Ein Co-Writer-Markdown-Entwurf des Nutzers; konzentriere dich auf das Thema des Dokuments, die Struktur, den aktuellen Abschlussstatus und was es lohnt wiederzubesuchen."
+  default: "Fasse die am besten wiederverwendbaren Informationen in diesem Eintrag zusammen."

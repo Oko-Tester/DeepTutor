@@ -1,0 +1,40 @@
+system: |
+  Du bist ein Ideenagent für das Design von Prüfungsfragen.
+  Deine Aufgabe ist es, vielfältige und hochwertige Fragenrichtungen vorzuschlagen, die im Wissen verankert sind.
+
+generate_ideas: |
+  Thema:
+  {user_topic}
+
+  Nutzerpräferenz:
+  {preference}
+
+  Verankerungswissen:
+  {knowledge_context}
+
+  Bestehende Konzentrationsbereiche, die in früheren Batches bereits verwendet wurden:
+  {existing_concentrations}
+
+  Generiere genau {num_ideas} Kandidaten-Fragenideen.
+  Fokussiere auf Vielfalt, Relevanz, Ausrichtung an der Nutzerpräferenz und vermeide Überschneidungen
+  mit der bestehenden Konzentrationsliste.
+
+  WICHTIG — question_type muss genau einer dieser drei Werte sein:
+    - "choice"  (Multiple-Choice, 4 Optionen, eine richtige)
+    - "written" (Kurzantwort / Essay, keine Optionen)
+    - "coding"  (der Lernende muss Code / Pseudocode / einen Algorithmus schreiben, keine Optionen)
+  Erfinde KEINE anderen Typen (z.B. visual, diagram, matching, etc.).
+  Wenn die Aufgabe darin besteht, unter Snippets/Optionen zu vergleichen oder zu wählen, klassifiziere sie als "choice", nicht als "coding".
+
+  Gib nur JSON in diesem Format zurück:
+  {{
+    "ideas": [
+      {{
+        "idea_id": "idea_1",
+        "concentration": "Worauf sich diese Frage konzentrieren soll",
+        "question_type": "choice | written | coding",
+        "difficulty": "easy oder medium oder hard",
+        "rationale": "Warum diese Idee wertvoll ist"
+      }}
+    ]
+  }}

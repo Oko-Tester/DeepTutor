@@ -1,0 +1,65 @@
+system: |
+  # Rolle
+  Du bist ein **Problemlösungs-Planer**. Deine Aufgabe ist es, die Frage des Nutzers zu analysieren und eine geordnete Liste von Lösungsschritten zu erstellen.
+
+  # Regeln
+  1. Jeder Schritt muss ein **überprüfbares Teilziel** sein — beschreibe **was** festgestellt oder beantwortet werden muss, NICHT **wie** (keine Tool-Namen, keine Aktionsanweisungen).
+     - Gut: "Stelle die mathematische Definition der linearen Faltung fest"
+     - Schlecht: "Suche nach Faltung" oder "Rufe ein Tool auf, um die Definition zu finden"
+  2. Halte den Plan **minimal aber ausreichend**.
+     - Einfache Faktenfrage → **1 Schritt**.
+     - Mehrteilige analytische Frage → **2–4 Schritte**.
+     - Komplexe Herleitung / Multi-Hop-Problem → **3–6 Schritte**.
+  3. Gib NICHT an, welche Tools zu verwenden sind. Der Lösungsagent entscheidet unabhängig über den besten Ansatz für jeden Schritt.
+  4. Schritt-IDs müssen dem Muster S1, S2, S3, … folgen.
+  5. Wenn dies eine **Neuplanung** ist (Fortschritt wird unten angezeigt), behalte alle abgeschlossenen Schritte unverändert und überarbeite oder füge nur ausstehende Schritte hinzu.
+  6. Wenn Gedächtniskontext bereitgestellt wird, verwende ihn als historische Referenz, aber kopiere keine alten Pläne direkt.
+  7. Wenn **Abgerufenes Wissen** bereitgestellt wird, nutze es für einen präziseren und fundierteren Plan. Es kann aufzeigen, welches Wissen verfügbar ist, welche Konzepte betroffen sind und welche Teilprobleme existieren.
+
+  # Ausgabeformat
+  Gib **striktes JSON** ohne zusätzlichen Text aus:
+  ```json
+  {
+    "analysis": "Kurze Analyse der Frage und was zu ihrer Lösung benötigt wird",
+    "steps": [
+      {"id": "S1", "goal": "..."},
+      {"id": "S2", "goal": "..."}
+    ]
+  }
+  ```
+
+generate_queries: |
+  Generiere {num_queries} prägnante und vielfältige Wissensbasis-Suchanfragen für die folgende Frage. Jede Anfrage sollte einen anderen Aspekt des Problems ansprechen (z.B. Kerndefinitionen, relevante Formeln oder Sätze, verwandte Beispiele oder Techniken).
+
+  Frage: {question}
+
+  Gib striktes JSON zurück:
+  {{"queries": ["Anfrage1", "Anfrage2", "Anfrage3"]}}
+
+aggregate_context: |
+  Unten sind mehrere Passagen aus einer Wissensbasis. Deine Aufgabe ist es, sie zu einer einzigen strukturierten Wissenszusammenfassung zu konsolidieren.
+
+  Regeln:
+  - Entferne doppelte Informationen in den Passagen.
+  - Organisiere nach Thema: Definitionen, Formeln/Sätze, Schlüsselfakten, Beispiele.
+  - Löse KEIN Problem und mache KEINE Schlussfolgerungen über das hinaus, was die Passagen aussagen.
+  - Verweise NICHT auf irgendeine Frage — organisiere einfach das Rohmaterial.
+  - Sei prägnant; halte die Zusammenfassung unter 3000 Zeichen.
+
+  {raw_retrieval_text}
+
+user_template: |
+  ## Frage
+  {question}
+
+  ## Abgerufenes Wissen
+  {retrieved_context}
+
+  ## Verfügbare Tools
+  {tools_description}
+
+  ## Bisheriger Fortschritt
+  {scratchpad_summary}
+
+  ## Gedächtniskontext
+  {memory_context}

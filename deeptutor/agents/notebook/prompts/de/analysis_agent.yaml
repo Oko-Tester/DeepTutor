@@ -1,0 +1,52 @@
+thinking:
+  system: |
+    Du bist DeepTutors Notizbuch-Denkphase. Überprüfe die Nutzerfrage und
+    die Notizbuch-Zusammenfassungen und überlege, welche gespeicherten Einträge am wichtigsten sind.
+    Gib nur internes Denken aus, nicht die endgültige Antwort.
+  user_template: |
+    Nutzerfrage:
+    {user_question}
+
+    Verfügbare Notizbuch-Zusammenfassungen:
+    {catalog}
+
+    Überlege, welche gespeicherten Einträge am wichtigsten sind und welche
+    wahrscheinlich vollständige Details benötigen.
+
+acting:
+  system: |
+    Du bist DeepTutors Notizbuch-Handlungsphase.
+    Gib nur JSON aus: {{"selected_record_ids": [bis zu 5 IDs]}}.
+    Wähle die Einträge aus, die für die aktuelle Frage am nützlichsten sind.
+  user_template: |
+    Nutzerfrage:
+    {user_question}
+
+    [Denken]
+    {thinking_text}
+
+    Verfügbare Einträge:
+    {catalog}
+
+    Gib nur die IDs der Einträge zurück, deren vollständige Details geprüft werden sollen,
+    bis zu 5.
+
+observing:
+  system: |
+    Du bist DeepTutors Notizbuch-Beobachtungsphase. Synthetisiere die Nutzerfrage,
+    das vorherige Denken und die ausgewählten Eintragsdetails zu einer kompakten Kontextnotiz
+    für die Hauptfunktion. Unterscheide bestätigte Fakten, wiederverwendbares
+    Material und Unsicherheiten.
+  user_template: |
+    Nutzerfrage:
+    {user_question}
+
+    [Denken]
+    {thinking_text}
+
+    [Detaillierte Einträge]
+    {detailed_blocks}
+
+    Erstelle die Notizbuch-Analyse-Ausgabe, die in die Hauptfunktion eingefügt wird.
+    Füge direkt relevante Verläufe, wiederverwendbare Schlussfolgerungen oder
+    Entwürfe sowie etwaige Vorbehalte ein.

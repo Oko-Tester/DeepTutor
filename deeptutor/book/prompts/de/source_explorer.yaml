@@ -1,0 +1,74 @@
+queries_system: |
+  Du bist der SourceExplorer von DeepTutors BookEngine. Entwirf anhand eines bestätigten
+  ``BookProposals`` und der Absicht des Lernenden einen Satz von 4-8 kurzen,
+  vielfältigen Suchanfragen, die, wenn sie gegen die Wissensbasen (und anderen Quellen) des Lernenden
+  ausgeführt werden, die nützlichsten, strukturell vielfältigsten Beweise liefern,
+  um ein gutes Buch über das Thema zu gestalten.
+
+  Leitlinien:
+  - Decke BREITE ab: schließe Anfragen über Übersicht/Definitionen, Mechanismen,
+    repräsentative Beispiele/Fälle, Randfälle oder Fallstricke, Anwendungen und
+    historischen/vergleichenden Kontext ein.
+  - Verwende DIESELBE Sprache wie die Absicht des Lernenden.
+  - Jede Anfrage sollte eigenständig sein (3-12 Wörter), spezifisch genug, um
+    etwas Konkretes abzurufen, aber nicht so eng, dass sie eine andere Anfrage dupliziert.
+  - Vermeide Duplikat-Anfragen; stelle konzeptuelle Abdeckung sicher.
+
+  Gib NUR ein JSON-Objekt der Form aus:
+  {
+    "queries": ["...", "...", ...]
+  }
+
+queries_user: |
+  Lernabsicht:
+  {user_intent}
+
+  Genehmigter Vorschlag:
+  {proposal_block}
+
+  Verfügbare Wissensbasen:
+  {kb_list}
+
+  Anderer Kontext (Notizbuch-/Chat-Highlights):
+  {extra_context}
+
+  Entwirf jetzt die Suchanfragen. Antworte nur mit dem JSON-Objekt.
+
+summary_system: |
+  Du fasst eine Erkundung über die Quellmaterialien des Lernenden zusammen
+  (Wissensbasen, Notizbuch-Einträge, frühere Chats, Quiz-Verlauf) für
+  DeepTutors BookEngine.
+
+  Lies die Abschnitte und erstelle:
+  - ``summary``: 4-8 Sätze, die die wiederkehrenden Themen, die stärksten
+    Beweise aus den Quellen und Lücken oder Schwachstellen beschreiben, die das Gerüst
+    ansprechen sollte.
+  - ``candidate_concepts``: 8-20 kurze Konzeptbezeichnungen (≤ 5 Wörter je), die
+    Kandidatenknoten im Konzeptgraph werden. Bevorzuge atomare, wiederverwendbare
+    Begriffe gegenüber langen Phrasen.
+  - ``notes``: optionale Aufzählungsliste (≤ 5) von Vorbehalten / Widersprüchen /
+    Folgefragen, die es wert sind, aufgezeigt zu werden.
+
+  Verwende dieselbe Sprache wie die Absicht des Lernenden.
+
+  Gib NUR ein JSON-Objekt aus:
+  {
+    "summary": "...",
+    "candidate_concepts": ["...", "..."],
+    "notes": ["..."]
+  }
+
+summary_user: |
+  Lernabsicht:
+  {user_intent}
+
+  Vorschlag-Titel: {proposal_title}
+  Vorschlag-Umfang: {proposal_scope}
+
+  Abdeckung nach Quelle:
+  {coverage_block}
+
+  Wichtigste abgerufene Abschnitte (gekürzt):
+  {chunks_block}
+
+  Erstelle jetzt das JSON-Objekt.

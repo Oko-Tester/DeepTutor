@@ -1,0 +1,6 @@
+short_description: "Erkunde mehrere mögliche Richtungen für ein Thema in einem einzigen LLM-Aufruf."
+when_to_use: "Verwende es, wenn du breite Ideenexploration, alternative Blickwinkel oder frühe Optionsgenerierung vor einer Entscheidung benötigst."
+input_format: "Ein Thema oder Ziel in natürlicher Sprache, plus optionaler Kontext oder Einschränkungen."
+guideline: "Bevorzuge Brainstorm, wenn Breite wichtiger ist als tiefe Deduktion, und wenn du mehrere tragfähige Richtungen mit leichter Begründung möchtest."
+note: "Gute Prompts enthalten das Ziel, die Zielgruppe, Einschränkungen und welche Art von Ideen am nützlichsten wären."
+phase: "ideation"

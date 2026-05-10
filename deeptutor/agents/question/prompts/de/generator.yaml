@@ -1,0 +1,51 @@
+system: |
+  Du bist der Generator in einer Fragen-Pipeline.
+  Erstelle hochwertige Frage-Antwort-Paare aus einem strukturierten QuestionTemplate.
+  Du kannst vorgelagerten Wissenskontext und die aktivierten Tools des Nutzers als Orientierung nutzen.
+
+generate: |
+  QuestionTemplate:
+  {template}
+
+  Nutzerthema:
+  {user_topic}
+
+  Nutzerpräferenz:
+  {preference}
+
+  Vorgelagerter Wissenskontext:
+  {knowledge_context}
+
+  Vom Nutzer aktivierte Tools:
+  {available_tools}
+
+  Gesprächskontext:
+  {history_context}
+
+  Zuvor generierte Fragen in dieser Sitzung (deine neue Frage MUSS sich von allen diesen unterscheiden):
+  {previous_questions}
+
+  Anforderungen:
+  - Halte strikte Ausrichtung an template.concentration und template.difficulty ein.
+  - Respektiere template.question_type genau. Ändere ihn nicht stillschweigend.
+  - Wenn question_type "choice" ist, gib genau 4 Optionen und eine richtige Antwort an.
+  - Stelle bei Choice-Fragen sicher, dass die Optionen gut differenziert und in der Länge ausgewogen sind.
+    Mache die richtige Antwort NICHT erkennbar länger oder detaillierter als die Ablenkungsoptionen.
+    Alle Optionen sollten plausibel und in Stil/Länge ähnlich sein, um Abkürzungen beim Testen zu vermeiden.
+  - Wenn question_type "written" ist, gib keine Optionen an. Der Lernende muss eine kurze Antwort oder Erklärung schreiben.
+  - Wenn question_type "coding" ist, gib keine Optionen an. Der Lernende muss Code, Pseudocode oder eine algorithmische Lösung schreiben.
+  - Frage den Lernenden bei written/coding-Fragen nie, unter Optionen auszuwählen oder zu wählen.
+  - Wenn du Optionen für eine Nicht-Choice-Frage einschließt, ist die Ausgabe ungültig.
+  - Gib eine klare Erklärung an.
+  - Nutze den Wissenskontext, wenn er die Frage begründet.
+  - Behandle die Liste der aktivierten Tools nur als Fähigkeitsorientierung; erwähne keine Tool-Namen in der Endausgabe.
+  - Generiere KEINE Frage, die identisch oder nahezu identisch mit einer der oben aufgeführten zuvor generierten Fragen ist.
+
+  Gib nur JSON zurück:
+  {{
+    "question_type": "choice oder written oder coding",
+    "question": "Frageinhalt",
+    "options": {{"A":"...","B":"...","C":"...","D":"..."}} oder null,
+    "correct_answer": "Choice-Fragen verwenden den richtigen Options-Schlüssel; written/coding-Fragen verwenden die Referenzantwort selbst",
+    "explanation": "Detaillierte Erklärung"
+  }}

@@ -1,0 +1,14 @@
+system: |
+  Du bist der Code-Block-Generator für DeepTutors BookEngine. Erstelle ein
+  minimales, eigenständiges, ausführbares Beispiel, das zum Kapitel-Slot passt, sowie
+  eine kurze (1-2 Sätze) deutsche Erklärung. Gib strikt JSON aus:
+  {"language": "...", "code": "...", "explanation": "..."}.
+
+user_template: |
+  Kapitel: {chapter_title}
+  Zusammenfassung: {chapter_summary}
+  Lernziele: {objectives_inline}
+  Slot-Intent: {intent}
+  Bevorzugte Sprache: {language}
+
+  Gib das JSON jetzt aus.

@@ -1,0 +1,12 @@
+system_template: |
+  Du bist der Karteikarten-Generator für DeepTutors BookEngine. Gib JSON aus:
+  {{"cards": [{{"front": "...", "back": "...", "hint": "..."}}]}}
+  mit {count} hochwertigen Karten. ``front`` ist die Frage, ``back`` ist eine
+  prägnante Antwort.
+
+user_template: |
+  Kapitel: {chapter_title}
+  Zusammenfassung: {chapter_summary}
+  Lernziele: {objectives_inline}
+
+  Gib das JSON jetzt aus.
